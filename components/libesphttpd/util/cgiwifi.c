@@ -130,18 +130,20 @@ int  cgiWiFiConnect(HttpdConnData *connData) {
 	wifi_config_t wifi_config;
 	uint8_t essid_len = strlen(essid);
 	uint8_t password_len = strlen(passwd);
-    memcpy(wifi_config.sta.ssid,essid, essid_len);
-    memcpy(wifi_config.sta.password,passwd,password_len);
-    wifi_config.sta.bssid_set = false;
-    wifi_config.sta.ssid[essid_len] = '\0';
-    wifi_config.sta.password[password_len] = '\0';
-    ESP_LOGI(TAG, "SSID is : %s",essid);
-    ESP_LOGI(TAG, "Password is : %s",passwd);
-    //ESP_LOGI(TAG, "Setting WiFi configuration SSID %s...", wifi_config.sta.ssid);
-    ESP_ERROR_CHECK( esp_wifi_stop() );
-    ESP_ERROR_CHECK( esp_wifi_set_mode(WIFI_MODE_STA) );
-    ESP_ERROR_CHECK( esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config) );
-    ESP_ERROR_CHECK( esp_wifi_start());
+	// Attempt to change connection parameters only if the SSID is not null
+	if(essid_len > 0 ) {
+	    memcpy(wifi_config.sta.ssid,essid, essid_len);
+	    memcpy(wifi_config.sta.password,passwd,password_len);
+	    wifi_config.sta.bssid_set = false;
+	    wifi_config.sta.ssid[essid_len] = '\0';
+	    wifi_config.sta.password[password_len] = '\0';
+	    ESP_LOGI(TAG, "SSID is : %s",essid);
+	    ESP_LOGI(TAG, "Password is : %s",passwd);
+	    ESP_ERROR_CHECK( esp_wifi_stop() );
+	    ESP_ERROR_CHECK( esp_wifi_set_mode(WIFI_MODE_STA) );
+	    ESP_ERROR_CHECK( esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config) );
+	    ESP_ERROR_CHECK( esp_wifi_start());
+	}
 	return HTTPD_CGI_DONE;
 }
 
