@@ -39,6 +39,7 @@ Cgi/template routines for the /wifi url.
 #include "esp_err.h"
 #include "esp_log.h"
 #include "cgiwifi.h"
+#include "module_settings.h"
 
 #define TAG "CGIWIFI"
 

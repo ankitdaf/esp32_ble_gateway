@@ -51,11 +51,14 @@
 
 #include "wifi_server.h"
 #include "wifi_client.h"
+#include "module_settings.h"
 
 #define GATTC_TAG "GATTC_DEMO"
 
 TimerHandle_t xTimers;
 char MY_BT_MAC[13];
+
+module_saved_param module_param;
 
 ///Declare static functions
 static void esp_gap_cb(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param_t *param);
@@ -480,7 +483,8 @@ void timer_callback(TimerHandle_t pxTimer ) {
 
 void app_main()
 {
-	ESP_ERROR_CHECK(nvs_flash_init());
+	initialize_memory();
+	load_parameters();
 	esp_bt_controller_config_t bt_cfg = BT_CONTROLLER_INIT_CONFIG_DEFAULT();
     esp_bt_controller_init(&bt_cfg);
     esp_bt_controller_enable(ESP_BT_MODE_BTDM);
