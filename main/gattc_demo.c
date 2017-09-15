@@ -355,7 +355,6 @@ static void esp_gap_cb(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param_t *par
             memcpy(request+35,",",1);
             memcpy(request+36,adv_data_string,adv_data_len*2);
             memset(request+36+adv_data_len*2,0,(100-(36+adv_data_len*2)));
-            ESP_LOGI(GATTC_TAG, "Data packet is : %s",request);
         	uint8_t status = xTaskCreate(&request_task, "request_task", 4096, (void *) request, 4, NULL);
         	if(status == pdPASS) {
         		ESP_LOGI(GATTC_TAG,"Successfully created task");
