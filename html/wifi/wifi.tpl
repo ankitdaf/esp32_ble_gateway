@@ -25,6 +25,11 @@ WiFi SSID: <br />
 <br>
 WiFi password, if applicable: <br />
 <input type="text" name="passwd" val="%WiFiPasswd%"> <br />
+URL Endpoint<br />
+<input type="text" name="url" val="%urlendpoint%"> <br />
+<br>
+Port<br />
+<input type="text" name="port" val="%port%"> <br />
 <input type="submit" name="connect" value="Connect!">
 </p>
 </div>

@@ -36,13 +36,13 @@
 
 #include "freertos/task.h"
 #include "freertos/event_groups.h"
+#include "string.h"
 
 #include "platform.h"
 #include "httpd.h"
 #include "cgiwifi.h"
 #include "wifi_client.h"
-
-#include "string.h"
+#include "module_settings.h"
 
 #define TAG "WIFICLIENT"
 
@@ -114,8 +114,10 @@ void request_task(void *pvParameters)
     request_t *req;
     char request_data[100];
     memcpy(request_data,(char *) pvParameters,strlen((char *) pvParameters));
-    char url[256] = "http://httpbin.org/get?data="; // This is just for demonstration, need to replace this with the url from the web config
-    strcat(url,(char *) pvParameters);
+    char url[256];
+    memset(url,0,256);
+    memcpy(url,module_param.url_endpoint,strlen(module_param.url_endpoint));
+    strcat(url,(char *) pvParameters); // TODO: Make it compatible with custom port numbers
     int status;
     EventBits_t uxBits = xEventGroupWaitBits(wifi_event_group, CONNECTED_BIT, false, true, 3000/portTICK_PERIOD_MS);
     if((uxBits & CONNECTED_BIT) == CONNECTED_BIT) {

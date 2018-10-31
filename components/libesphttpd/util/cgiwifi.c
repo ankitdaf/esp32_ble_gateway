@@ -121,6 +121,8 @@ int  cgiWiFiScan(HttpdConnData *connData) {
 int  cgiWiFiConnect(HttpdConnData *connData) {
 	char essid[128];
 	char passwd[128];
+	char url[256];
+	char port[6];
 
 	if (connData->conn==NULL) {
 		//Connection aborted. Clean up.
@@ -128,6 +130,22 @@ int  cgiWiFiConnect(HttpdConnData *connData) {
 	}
 	httpdFindArg(connData->post->buff, "essid", essid, sizeof(essid));
 	httpdFindArg(connData->post->buff, "passwd", passwd, sizeof(passwd));
+	httpdFindArg(connData->post->buff, "url", url, sizeof(url));
+	httpdFindArg(connData->post->buff, "port", port, sizeof(port));
+	// Process url endpoint first so we can save it before we change the wifi config
+	uint8_t len = strlen(url);
+	if(len > 0 ) {
+		memcpy(module_param.url_endpoint,url,len);
+	}
+	len = strlen(port);
+	if(port > 0 ) {
+		memcpy(module_param.port_number,port,len);
+	}
+	else {
+		memcpy(module_param.port_number,"80",3);
+	}
+	save_parameters();
+
 	wifi_config_t wifi_config;
 	uint8_t essid_len = strlen(essid);
 	uint8_t password_len = strlen(passwd);
@@ -138,8 +156,6 @@ int  cgiWiFiConnect(HttpdConnData *connData) {
 	    wifi_config.sta.bssid_set = false;
 	    wifi_config.sta.ssid[essid_len] = '\0';
 	    wifi_config.sta.password[password_len] = '\0';
-	    ESP_LOGI(TAG, "SSID is : %s",essid);
-	    ESP_LOGI(TAG, "Password is : %s",passwd);
 	    ESP_ERROR_CHECK( esp_wifi_stop() );
 	    ESP_ERROR_CHECK( esp_wifi_set_mode(WIFI_MODE_STA) );
 	    ESP_ERROR_CHECK( esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config) );
